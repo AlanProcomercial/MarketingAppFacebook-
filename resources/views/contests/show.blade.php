@@ -36,7 +36,7 @@ Contests
 				@if(date('Y-m-d') >= $contest->start OR date('Y-m-d') < $contest->end)
 					<li><a href="{{ route('contest.applie', $contest->id )}}" class="current btn-theme btn-small">Apply for this contest</a></li>
 				@endif
-					<li><a href="" class="current btn-theme btn-small">Invite others friends! <i class="fa fa-facebook-square"></i></a></li>
+					<li><a href="javascript:;" v-on:click="invite({{$contest->id}})" class="current btn-theme btn-small">Invite others friends! <i class="fa fa-facebook-square"></i></a></li>
 				</ul>
 			</nav>
 		</div>
@@ -124,7 +124,18 @@ Contests
 								this.verifyIp();
 							}
 					});			
-				}
+				},
+				invite: function(id){
+					var contest = "http://localhost:8000/contests/"+id;
+					//En este caso use la variable url como muestra porque el cuadro de dialogo de facebook da error con la url local
+					var url = "https://github.com/AlanProcomercial/MarketingAppFacebook-";
+
+					FB.ui(
+					 {
+					  	 method: 'share',
+					 	 href: url
+						}, function(response){});
+					}
 			} 
 		});
 	</script>
