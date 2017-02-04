@@ -24,6 +24,27 @@ Route::group(['prefix' => 'contests'], function(){
 		Route::post('/apply/{id}', array('as' => 'apply.save','middleware' => 'auth','uses' => 'FrontendController@saveApplie'));
 });
 
+Route::group(['prefix' => 'admin'], function(){
+
+		Route::get('/', function(){
+
+			return view('admin.index');
+
+		});
+
+		Route::get('/contests', function(){
+
+			return view('admin.contest.index');
+
+		});
+
+		Route::get('/contestants', function(){
+
+			return view('admin.contestants.index');
+
+		});
+});
+
 Auth::routes();
 
 /*** Facebook Routes ****/
