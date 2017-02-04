@@ -17,6 +17,7 @@ class CreateContestsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('description');
+            $table->string('slug')->unique();
             $table->string('image')->nullable();
             $table->integer('max_contestants');
             $table->date('start');

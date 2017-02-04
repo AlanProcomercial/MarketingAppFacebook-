@@ -32,6 +32,11 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js') }}"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js') }}"></script>
     <![endif]-->
+    <script>
+        window.Laravel = {!! json_encode([
+            'csrfToken' => csrf_token(),
+        ]) !!};
+    </script>
 
 </head>
 
@@ -59,13 +64,16 @@
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        <!--<li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
                         </li>
                         <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                         </li>
-                        <li class="divider"></li>
-                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        <li class="divider"></li>-->
+                        <li><a href="#" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                         </li>
+                        <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                                    {{ csrf_field() }}
+                         </form>
                     </ul>
                     <!-- /.dropdown-user -->
                 </li>
@@ -134,7 +142,9 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="{{ asset('backend/dist/js/sb-admin-2.js') }}"></script>
-
+    <!-- Vue -->
+    <script src="{{ asset('vue/vue.js') }}"></script>
+    <script src="{{ asset('vue/vue-resource.min.js') }}"></script>
     @yield('js')
 
 </body>

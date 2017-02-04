@@ -20,6 +20,7 @@ class CreateContestantsTable extends Migration
             $table->string('photo');
             $table->string('description')->nullable();
             $table->integer('total_votes')->default(0);
+            $table->boolean('banned')->default(FALSE);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')

@@ -8,7 +8,7 @@ class Contest extends Model
 {
     public function contestants(){
 
-    	return $this->belongsToMany('App\Contestant', 'contest_contestant');
+    	return $this->hasMany('App\Contestant');
 
     }
 }
