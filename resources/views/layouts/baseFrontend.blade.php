@@ -32,8 +32,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             'csrfToken' => csrf_token(),
         ]) !!};
     </script>
-      <script src="{{ asset('vue/vue.js') }}"></script>
-    <script src="{{ asset('vue/vue-resource.min.js') }}"></script>
 </head>
 <body>
 	<!-- Fixed navbar -->
@@ -231,6 +229,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <script type='text/javascript' src="{{ asset('frontend/js/camera.min.js') }}"></script> 
     <script src="{{ asset('frontend/js/bootstrap.min.js') }}"></script> 
     <script src="{{ asset('frontend/js/custom.js') }}"></script>
+    <script src="{{ asset('vue/vue.js') }}"></script>
+    <script src="{{ asset('vue/vue-resource.min.js') }}"></script>
     <script>
 		jQuery(function(){
 			

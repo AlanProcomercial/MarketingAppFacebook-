@@ -4,58 +4,84 @@
 Contests
 @endsection
 
-@section('meta')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-@endsection
-
 @section('header')
  <header id="head" class="secondary">
-    <div class="container">
-            <h1>{!! $contest->name !!}</h1>
-            <p>{!! $contest->description !!}</p>
-    </div>
+ 	@foreach($contest as $contest)
+	    <div class="container">
+	            <h1>{!! $contest->name !!}</h1>
+	            <p>{!! $contest->description !!}</p>
+	    </div>
+    @endforeach
 </header>
 @endsection
 
 @section('content')
 <section class="container">
-		@if($contest->end <= date('Y-m-d'))
-        	<di class="row">
-        		<div class="col-lg-4 col-lg-offset-4">
-        			<div class="alert alert-danger">
-        			<p><strong>This contest finished at {!! $contest->end !!}</strong></p>
-        		</div>
-        		</div>
-        	</di>
-         @endif
 		<div class="row">
 			<nav id="filter" class="col-md-12 text-center">
 				<ul>
 					<li><a href="{{ url('contests') }}" class="current btn-theme btn-small"><i class="fa fa-arrow-left"></i> Back</a></li>
-				<!-- Mostrar el boto de concursar si la fecha eta entre en inicio o el fin del concurso-->
-				@if(date('Y-m-d') >= $contest->start OR date('Y-m-d') < $contest->end)
-					<li><a href="{{ route('contest.applie', $contest->id )}}" class="current btn-theme btn-small">Apply for this contest</a></li>
+				<!-- Mostrar el boton de concursar si la fecha eta entre en inicio o el fin del concurso-->
+				@if($contest->start <=  date('Y-m-d') AND  $contest->end >= date('Y-m-d'))
+					<li><a href="{{ route('contest.applie', $contest->slug )}}" class="current btn-theme btn-small">Apply for this contest</a></li>
 				@endif
 					<li><a href="javascript:;" v-on:click="invite({{$contest->id}})" class="current btn-theme btn-small">Invite others friends! <i class="fa fa-facebook-square"></i></a></li>
 				</ul>
 			</nav>
 		</div>
+		<!-- Mensaje de concurso terminado -->
+		@if($contest->end <= date('Y-m-d'))
+        	<div class="row">
+        		<div class="col-lg-8 col-lg-offset-2">
+        			<div class="alert alert-danger">
+        			<p><strong>This contest finished at {!! $contest->end !!}</strong></p>
+        		</div>
+        		</div>
+        	</div>
+         @endif
+         <!-- /Mensaje de concurso terminado -->
+         <!-- Mensaje de Session-->
+         @if(Session::has('message'))
+        	<div class="row">
+        		<div class="col-lg-8 col-lg-offset-2">
+        			<div class="alert alert-danger">
+        			<p><strong>{!! Session::get('message') !!}</strong></p>
+        		</div>
+        		</div>
+        	</div>
+         @endif
+         <!--/Mensaje de Session-->
+         <!-- Messageip-->
+		<div class="row" v-if="messageip.show">
+        		<div class="col-lg-8 col-lg-offset-2">
+        			<div v-bind:class="[messageip.type]">
+        			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        			<p><strong>@{{ messageip.text }}</p>
+        			</div>
+        		</div>
+            </div>
+          <!--/Messageip -->
+          <!-- Mensaje de voto realizado-->
 		<div class="row" v-if="message.show">
-        		<div class="col-lg-4 col-lg-offset-4">
+        		<div class="col-lg-8 col-lg-offset-2">
         			<div v-bind:class="[message.type]">
+        			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         			<p><strong>@{{ message.text }}</p>
         			</div>
         		</div>
             </div>
+          <!--/Mensaje de voto realizado-->
+          <!-- Concursantes -->
 		<div class="row flat" v-cloak>
 			<div class="col-lg-3 col-md-3 col-xs-6" v-for="contestant in contestants">
 				<ul class="plan plan2">
 					<li class="plan-name">@{{ contestant.user.name }}</li>
 					<figure><img v-bind:src="contestant.photo" alt=""></figure>
 					<li><strong>@{{ contestant.description }}</strong></li>
-					<li><strong>Votes: @{{ contestant.total_votes }} <i class="fa fa-arrow-up"></i></strong></li>
+					<li><strong>Total votes: @{{ contestant.total_votes }} <i class="fa fa-arrow-up"></i></strong></li>
+					<li style="color: red;" v-if="contestant.banned">BANNED <i class="fa fa-ban"></i></li>
 					<li class="plan-action">
-						<a  v-if="vote" v-on:click="vote(contestant)" class="btn">
+						<a  v-if="!contestant.banned && vote" v-on:click="vote(contestant)" class="btn">
 							<span v-if="contestant.voting">Voting...</span>
 							<span v-else>Vote</span>
 						</a> <!-- Boton que se muestra si eñ visitante habilitado para votar en este concurso -->
@@ -64,18 +90,24 @@ Contests
 				</ul>
 			</div>
 		</div>
+		<!-- Consursantes -->
 	</section>
 @endsection
 
 @section('js')
 	<script type="text/javascript">
+
+		Vue.http.headers.common['X-CSRF-TOKEN'] = "{!! csrf_token() !!}";
+
 		var id = {!! $contest->id !!};
+
 		new Vue({
 			el: '#app',
 			data: {
 				contestants: [],
 				vote: true,	//Cuando se verifique la ip, esta propiedad cambiará a FALSE, inhabilitando los botones  de votar
-				message: {show: false, text: '', tipe: ''}  //propieda para agregar un mensaje dinamico
+				messageip: {show: false, text: '', tipe: ''},  //Propiedades del mensaje que mostrara cuando ya el visitante voto
+				message: {show: false, text: '', tipe: ''},  //Propiedades del mensaje que mostrara cuando ya el visitante voto
 				},
 			mounted: function(){
 				this.getContestants();
@@ -83,7 +115,7 @@ Contests
 			},
 			methods:{
 				getContestants: function(){ //Funcion que carga los participantes
-					this.$http.get('/api/contestants/'+id).then(function(response){
+					this.$http.get('/contestants/'+id).then(function(response){
 							
 							for (var i = 0 ; i < response.body.length; i++) {
 								this.contestants.push(response.body[i]);
@@ -97,26 +129,27 @@ Contests
 					});	
 				},
 				verifyIp: function(){ //funcion para verificar si la ip del visitante ya realizo la votacion en este concurso
-					this.$http.get('/api/verifyIp/'+id).then(function(response){
+					this.$http.get('/verifyIp/'+id).then(function(response){
 							var data = response.body;
 							if(data.canVote == false){
 								this.vote = false; //Si el visitante ya voto, de seabilitan los botones de votar
 								/*Mostramos un mensaje de que ya votó*/
-								this.message.text = "You already votes for this contest from this computer!";
-								this.message.type = "alert alert-warning";
-								this.message.show = true;
+								this.messageip.text = "You already votes in this contest from this computer!";
+								this.messageip.type = "alert alert-warning";
+								this.messageip.show = true;
 							}
 					});			
 				},
 				vote: function(contestant){
-					this.$http.post('/api/votes/save', {id: id, contestant_id: contestant.id}).then(function(response){
+					this.$http.post('/votes/save', {id: id, contestant_id: contestant.id}).then(function(response){
 							var data = response.body;
 							if(data.vote == true){
 								contestant.total_votes ++;
-								this.message.text = "Congratulations, yo voted in this contest for" + contestant.user.name;
+								this.message.text = "Congratulations, yo voted in this contest for " + contestant.user.name;
 								this.message.type = "alert alert-success";
 								this.message.show = true;
 								this.verifyIp();
+								
 							}else{
 								this.message.text = "Error";
 								this.message.type = "alert alert-danger";

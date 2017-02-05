@@ -1,7 +1,9 @@
 @extends('layouts.baseFrontend')
 
 @section('page')
-{!! $contest->name !!}
+    @foreach($contest as $contest)
+         {!! $contest->name !!}
+    @endforeach
 @endsection
 
 @section('header')
@@ -15,6 +17,13 @@
 
 @section('content')
 <div class="container">
+    <div class="row">
+            <nav id="filter" class="col-md-12 text-center">
+                <ul>
+                    <li><a href="{{ route('contest.show', $contest->slug) }}" class="current btn-theme btn-small"><i class="fa fa-arrow-left"></i> Back</a></li>
+                </ul>
+            </nav>
+    </div>
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <h3 class="section-title">Hi <strong>{!! Auth::user()->name !!}</strong>, complete the form to apply in this contest</h3>
@@ -48,6 +57,17 @@
                             </span>
                         @endif
                 </div>
+                <div class="form-group{{ $errors->has('captcha') ? ' has-error' : '' }}">
+                        {!! captcha_img() !!}
+                        <br><br>
+                        <input type="text" class="form-control" name="captcha" required>
+                         @if ($errors->has('captcha'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('captcha') }}</strong>
+                            </span>
+                        @endif
+                </div>
+
                 
                 <div class="form-group">
                     <button type="submit" class="btn btn-two">Apply!</button>

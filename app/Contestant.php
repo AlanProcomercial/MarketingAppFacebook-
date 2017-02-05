@@ -10,5 +10,10 @@ class Contestant extends Model
 
         return $this->belongsTo('App\User');
     }
+
+     public function contest(){
+
+        return $this->belongsTo('App\Contest');
+    }
     
 }
