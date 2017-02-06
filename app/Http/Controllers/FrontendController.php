@@ -28,9 +28,12 @@ class FrontendController extends Controller
 
     	$contest = Contest::where('slug', $slug)->get();
 
+        $winner = Contestant::where('contest_id', $contest[0]->id)
+                                    ->orderBy('total_votes', 'DESC')->firstOrfail();
+
         if(count($contest) > 0){
 
-    	return view('contests.show', compact('contest'));
+    	return view('contests.show', compact('contest', 'winner'));
 
         }
 

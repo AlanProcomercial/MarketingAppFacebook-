@@ -38,6 +38,12 @@ Contests
         		</div>
         		</div>
         	</div>
+    		@component('contests.components.winner')
+    			@slot('name', $winner->user->name)
+    			@slot('photo', asset($winner->photo))
+    			@slot('description', $winner->description)
+    			@slot('total_votes', $winner->total_votes)
+    		@endcomponent
          @endif
          <!-- /Mensaje de concurso terminado -->
          <!-- Mensaje de Session-->
