@@ -38,12 +38,22 @@ Contests
         		</div>
         		</div>
         	</div>
-    		@component('contests.components.winner')
-    			@slot('name', $winner->user->name)
-    			@slot('photo', asset($winner->photo))
-    			@slot('description', $winner->description)
-    			@slot('total_votes', $winner->total_votes)
-    		@endcomponent
+        	@if($winner->total_votes == 0)
+        		<div class="row">
+	        		<div class="col-lg-8 col-lg-offset-2">
+	        			<div class="alert alert-danger">
+	        			<p><strong>No winners!</strong></p>
+	        		</div>
+        		</div>
+        	</div>
+        	@else
+	    		@component('contests.components.winner')
+	    			@slot('name', $winner->user->name)
+	    			@slot('photo', asset($winner->photo))
+	    			@slot('description', $winner->description)
+	    			@slot('total_votes', $winner->total_votes)
+	    		@endcomponent
+    		@endif
          @endif
          <!-- /Mensaje de concurso terminado -->
          <!-- Mensaje de Session-->
