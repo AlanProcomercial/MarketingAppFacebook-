@@ -1,0 +1,92 @@
+body {
+	margin: 0px;
+	padding: 0px;
+	background-image: url('../img/fondo.jpg');
+	background-size: 100%;
+}
+
+.nave {
+	width: 70%;
+	opacity: 0.5;
+	margin: 0% 0% 0% 30%;
+}
+
+.nave a {
+	color: white;
+}
+
+.conte {
+	margin: 20px 100px 10px 100px;
+	font-family: Franklin Gothic;
+	color: black;
+}
+
+.conte h1 {
+	font-family: FaceOff;
+}
+
+.model img{
+	width: 200px;
+	height: 220px;
+	margin: 10px 0px 20px 0px;
+
+}
+
+.model h3{
+	color: white;
+	margin: 0px 0px 30px 50px;
+	font-family: FaceOff;
+}
+
+.model h6 {
+	font-family: Franklin Gothic;
+	margin: 0px 0px 20px 0px;
+}
+
+.model button{
+	font-family: Franklin Gothic;
+}
+
+.mf {
+
+	display: inline-block;
+	background-color: white; 
+	width : 220px;
+}
+
+.mas {
+	background-image: url('../img/marron.jpg');
+	background-size: 100%;
+	width: 100%;
+	height: 150px;
+	margin: 200px 0px 100px 0px;
+}
+
+.mas h2{
+	font-family: FaceOff;
+	display: inline-block;
+	padding: 01em;
+}
+
+.ch a{
+	margin: 0px 0px 0px 250px;
+}
+
+.mas a {
+	color: white;
+	text-decoration: none;
+}
+
+.mas a:hover {
+	color: #D8D8D8;
+}
+
+.footer {
+	background: rgba(0, 0, 0, 0.7);
+
+	width: 100%;
+	color: white;
+	padding: 3em;
+	font-family: FaceOff;
+	font-size: 15px;
+}
